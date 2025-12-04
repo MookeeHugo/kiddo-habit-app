@@ -394,6 +394,7 @@ export default function Dashboard() {
                     <TaskCard
                       key={task.id}
                       task={task}
+                      onComplete={handleCompleteTask}
                       onDelete={deleteTask}
                     />
                   ))}

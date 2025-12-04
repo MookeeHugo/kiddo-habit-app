@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Modal, Button, Badge } from './ui';
+import { Modal, Button } from './ui';
 import { type Task, type TaskDifficulty, type TaskType } from '../lib/db';
 import { IconPicker } from './IconPicker';
 import { TASK_ICON_CATEGORIES } from '../lib/iconLibrary';
@@ -22,12 +22,6 @@ export interface TaskFormProps {
   mode: 'add' | 'edit';
 }
 
-// 预设颜色选项
-const TASK_COLORS = [
-  '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
-  '#EC4899', '#14B8A6', '#F97316', '#6366F1', '#84CC16',
-];
-
 export function TaskForm({
   isOpen,
   onClose,
@@ -39,7 +33,6 @@ export function TaskForm({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [icon, setIcon] = useState('📝');
-  const [color, setColor] = useState('#3B82F6');
   const [type, setType] = useState<TaskType>('daily');
   const [difficulty, setDifficulty] = useState<TaskDifficulty>('medium');
   const [repeatType, setRepeatType] = useState<'daily' | 'weekly' | 'none'>('daily');
@@ -55,10 +48,10 @@ export function TaskForm({
       setTitle(initialData.title);
       setDescription(initialData.description || '');
       setIcon(initialData.icon);
-      setColor(initialData.color);
       setType(initialData.type);
       setDifficulty(initialData.difficulty);
-      setRepeatType(initialData.repeatType || 'none');
+      // repeatType 根据 repeatDays 推断
+      setRepeatType(initialData.repeatDays && initialData.repeatDays.length > 0 ? 'weekly' : 'daily');
       setRepeatDays(initialData.repeatDays || []);
       setDueDate(
         initialData.dueDate
@@ -73,7 +66,6 @@ export function TaskForm({
       setTitle('');
       setDescription('');
       setIcon('📝');
-      setColor('#3B82F6');
       setType('daily');
       setDifficulty('medium');
       setRepeatType('daily');
@@ -99,10 +91,8 @@ export function TaskForm({
         title: title.trim(),
         description: description.trim(),
         icon,
-        color,
         type,
         difficulty,
-        repeatType: type === 'daily' ? repeatType : 'none',
         repeatDays: repeatType === 'weekly' ? repeatDays : undefined,
         dueDate: dueDate ? new Date(dueDate) : undefined,
         checklist: checklist.map((text, index) => ({
@@ -194,43 +184,16 @@ export function TaskForm({
           />
         </div>
 
-        {/* 图标和颜色选择 - 响应式优化 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-base font-semibold text-gray-700 mb-3">
-              选择图标 ✨
-            </label>
-            <IconPicker
-              value={icon}
-              onChange={setIcon}
-              categories={TASK_ICON_CATEGORIES}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              选择颜色
-            </label>
-            <div className="grid grid-cols-5 gap-2">
-              {TASK_COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setColor(c)}
-                  className={`
-                    w-10 h-10 sm:w-12 sm:h-12 rounded-xl border-2 transition-all
-                    ${
-                      color === c
-                        ? 'border-gray-800 scale-105 ring-2 ring-gray-800 ring-offset-2'
-                        : 'border-gray-200 hover:border-gray-400'
-                    }
-                  `}
-                  style={{ backgroundColor: c }}
-                  aria-label={`颜色${c}`}
-                />
-              ))}
-            </div>
-          </div>
+        {/* 图标选择 */}
+        <div>
+          <label className="block text-base font-semibold text-gray-700 mb-3">
+            选择图标 ✨
+          </label>
+          <IconPicker
+            value={icon}
+            onChange={setIcon}
+            categories={TASK_ICON_CATEGORIES}
+          />
         </div>
 
         {/* 任务类型 - 响应式优化 */}

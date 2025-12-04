@@ -126,7 +126,7 @@ export function useTasks() {
    */
   const toggleTaskCompletion = async (taskId: string): Promise<{
     success: boolean;
-    reward?: ReturnType<typeof completeTask>;
+    reward?: Awaited<ReturnType<typeof completeTask>>;
   }> => {
     const task = await db.tasks.get(taskId);
     if (!task) throw new Error('任务不存在');
@@ -252,12 +252,10 @@ export function useTasks() {
       title: taskData.title || '',
       description: taskData.description,
       icon: taskData.icon || '📝',
-      color: taskData.color || '#3B82F6',
       difficulty: taskData.difficulty || 'medium',
       points: 0,
       status: 'pending',
       streak: 0,
-      repeatType: taskData.repeatType,
       repeatDays: taskData.repeatDays,
       dueDate: taskData.dueDate,
       checklist: taskData.checklist || [],
@@ -278,10 +276,8 @@ export function useTasks() {
       title: taskData.title,
       description: taskData.description,
       icon: taskData.icon,
-      color: taskData.color,
       type: taskData.type,
       difficulty: taskData.difficulty,
-      repeatType: taskData.repeatType,
       repeatDays: taskData.repeatDays,
       dueDate: taskData.dueDate,
       checklist: taskData.checklist,

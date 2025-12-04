@@ -26,7 +26,6 @@ export function EmptyState({
   description,
   actionText,
   onAction,
-  color = '#4ECDC4',
   size = 'medium',
 }: EmptyStateProps) {
   const sizeStyles = {
@@ -104,10 +103,6 @@ export function EmptyState({
             variant="primary"
             size="large"
             icon="✨"
-            style={{
-              backgroundColor: color,
-              borderColor: color,
-            }}
           >
             {actionText}
           </Button>

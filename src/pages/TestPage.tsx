@@ -15,9 +15,9 @@ import {
 } from '../lib/gamification';
 
 export default function TestPage() {
-  const { user, isLoading, completeTask, updateUserInfo } = useUser();
+  const { user, isLoading } = useUser();
   const { tasks, createTask, toggleTaskCompletion, checkAndResetDaily } = useTasks();
-  const { rewards, createReward, redeemReward } = useRewards();
+  const { rewards, createReward } = useRewards();
   const { achievements, unlockedAchievements } = useAchievements();
 
   const [testResults, setTestResults] = useState<string[]>([]);

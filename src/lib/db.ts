@@ -66,6 +66,11 @@ export interface Task {
 }
 
 /**
+ * 奖励类型
+ */
+export type RewardCategory = 'toy' | 'activity' | 'privilege';
+
+/**
  * 奖励数据模型
  */
 export interface Reward {
@@ -74,7 +79,7 @@ export interface Reward {
   description: string;                  // 奖励描述
   cost: number;                         // 需要的积分
   icon: string;                         // 图标emoji
-  category: 'toy' | 'activity' | 'privilege';  // 奖励类型
+  category: RewardCategory;             // 奖励类型
   redeemed: boolean;                    // 是否已兑换
   redeemedAt?: Date;                    // 兑换时间
   createdAt: Date;

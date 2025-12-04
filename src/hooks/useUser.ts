@@ -4,13 +4,12 @@
 
 import { useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, initializeDatabase, type User } from '../lib/db';
+import { db, initializeDatabase, type User, type Task } from '../lib/db';
 import { useUserStore } from '../stores/userStore';
 import {
   checkLevelUp,
   checkNewAchievements,
   calculateTaskReward,
-  type Task,
 } from '../lib/gamification';
 
 /**
