@@ -18,10 +18,14 @@ import {
 export function useUser() {
   const { user, setUser, updateUser, setLoading, setError } = useUserStore();
 
-  // 使用Dexie的useLiveQuery实时监听数据库变化
+  // 使用Dexie的useLiveQuery实时监听当前登录用户的数据库变化
   const dbUser = useLiveQuery(async () => {
-    const users = await db.user.toArray();
-    return users[0] || null;
+    const currentUserId = localStorage.getItem('currentUserId');
+    if (!currentUserId) {
+      return null;
+    }
+    const currentUser = await db.user.get(currentUserId);
+    return currentUser || null;
   });
 
   // 初始化数据库
@@ -30,9 +34,14 @@ export function useUser() {
       try {
         setLoading(true);
         await initializeDatabase();
-        const users = await db.user.toArray();
-        if (users.length > 0) {
-          setUser(users[0]);
+
+        // 获取当前登录用户
+        const currentUserId = localStorage.getItem('currentUserId');
+        if (currentUserId) {
+          const currentUser = await db.user.get(currentUserId);
+          if (currentUser) {
+            setUser(currentUser);
+          }
         }
       } catch (error: any) {
         console.error('Failed to initialize database:', error);
