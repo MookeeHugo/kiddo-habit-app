@@ -133,14 +133,6 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
             </Button>
           </form>
 
-          {/* 提示信息 */}
-          <div className="mt-6 text-center text-sm text-gray-500">
-            <p>默认管理员账号：</p>
-            <p className="font-mono mt-1">
-              用户名: <span className="font-bold">mookee</span> |
-              密码: <span className="font-bold">Xiaqian1989</span>
-            </p>
-          </div>
         </motion.div>
 
         {/* 装饰元素 */}
