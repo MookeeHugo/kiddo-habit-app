@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button, useToast } from '../components/ui';
 import { useAuth } from '../hooks/useAuth';
+import { useAppConfig } from '../hooks/useAppConfig';
 
 export interface LoginPageProps {
   onLoginSuccess: () => void;
@@ -16,6 +17,7 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
   const [password, setPassword] = useState('');
   const { login, isLoading, error } = useAuth();
   const { showToast } = useToast();
+  const { config } = useAppConfig();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,10 +62,10 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
             🌟
           </motion.div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            习惯养成小助手
+            {config.appName}
           </h1>
           <p className="text-gray-600">
-            坚持好习惯，成就小英雄！
+            {config.appSlogan}
           </p>
         </div>
 

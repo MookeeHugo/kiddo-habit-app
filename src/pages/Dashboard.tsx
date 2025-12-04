@@ -34,6 +34,7 @@ import { useStats } from '../hooks/useStats';
 import { useSound } from '../hooks/useSound';
 import { useTheme } from '../hooks/useTheme';
 import { useAuth } from '../hooks/useAuth';
+import { useAppConfig } from '../hooks/useAppConfig';
 import { type Task, type Reward } from '../lib/db';
 
 type Tab = 'tasks' | 'rewards' | 'achievements' | 'stats' | 'settings';
@@ -53,6 +54,7 @@ export default function Dashboard() {
   // 数据和操作
   const { user } = useUser();
   const { checkAuth, logout } = useAuth();
+  const { config, updateConfig, resetConfig } = useAppConfig();
   const {
     pendingTasks,
     completedTasks,
@@ -359,10 +361,10 @@ export default function Dashboard() {
         {/* 页面标题 - 响应式优化 */}
         <div className="text-center pt-2 sm:pt-0">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-1 sm:mb-2">
-            🌟 习惯养成小助手 🌟
+            🌟 {config.appName} 🌟
           </h1>
           <p className="text-sm sm:text-base text-gray-600">
-            坚持好习惯，成就小英雄！
+            {config.appSlogan}
           </p>
         </div>
 
@@ -627,6 +629,66 @@ export default function Dashboard() {
               {user.role === 'admin' && (
                 <UserManagement currentUser={user} />
               )}
+            </section>
+
+            {/* 应用设置 */}
+            <section>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
+                ⚙️ 应用设置
+              </h2>
+
+              <Card className="mb-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  ✏️ 自定义名称和简介
+                </h3>
+
+                <div className="space-y-4">
+                  {/* 应用名称 */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      应用名称
+                    </label>
+                    <input
+                      type="text"
+                      value={config.appName}
+                      onChange={(e) => updateConfig({ appName: e.target.value })}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none text-lg"
+                      placeholder="例如：日新伴学小助手"
+                    />
+                  </div>
+
+                  {/* 应用简介 */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      应用简介
+                    </label>
+                    <input
+                      type="text"
+                      value={config.appSlogan}
+                      onChange={(e) => updateConfig({ appSlogan: e.target.value })}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none text-lg"
+                      placeholder="例如：坚持好习惯，成就小英雄！"
+                    />
+                  </div>
+
+                  {/* 重置按钮 */}
+                  <div className="pt-2">
+                    <Button
+                      variant="secondary"
+                      size="medium"
+                      icon="🔄"
+                      onClick={() => {
+                        if (confirm('确定要恢复默认名称和简介吗？')) {
+                          resetConfig();
+                          showToast('已恢复默认设置', 'success');
+                        }
+                      }}
+                    >
+                      恢复默认
+                    </Button>
+                  </div>
+                </div>
+              </Card>
             </section>
 
             {/* 数据管理 */}
@@ -966,10 +1028,10 @@ export default function Dashboard() {
               <Card>
                 <div className="text-center">
                   <h3 className="text-xl font-bold text-gray-800 mb-2">
-                    🌟 习惯养成小助手 🌟
+                    🌟 {config.appName} 🌟
                   </h3>
                   <p className="text-gray-600 mb-4">
-                    专为小学生设计的习惯培养与自学能力工具
+                    {config.appSlogan}
                   </p>
                   <div className="text-sm text-gray-500 space-y-1">
                     <p>版本：1.0.0</p>
