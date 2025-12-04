@@ -100,6 +100,11 @@ export interface Achievement {
 }
 
 /**
+ * 用户角色
+ */
+export type UserRole = 'admin' | 'user';
+
+/**
  * 用户数据模型
  * 参考：habitica-reference/website/server/models/user/schema.js
  */
@@ -107,6 +112,11 @@ export interface User {
   id: string;
   name: string;                         // 用户昵称
   avatar: string;                       // 头像（emoji）
+
+  // 认证相关
+  username: string;                     // 登录用户名
+  password: string;                     // 密码（简单加密）
+  role: UserRole;                       // 用户角色
 
   // 核心游戏化数据（参考Habitica简化）
   level: number;                        // 等级（参考Habitica的lvl）
@@ -149,21 +159,15 @@ class KiddoHabitDatabase extends Dexie {
   constructor() {
     super('KiddoHabitDB');
 
-    // 版本5（最终修复版本）- 移除 Date 类型索引
-    this.version(5).stores({
-      tasks: 'id, type, status, order',       // 移除 completed（布尔值不能作为索引）
-      rewards: 'id, cost',                     // 移除 redeemed（布尔值）
-      achievements: 'id',                      // 移除 unlocked（布尔值）
-      user: 'id',
-      dailyHistory: 'id',                      // 移除 date（Date类型不能作为索引）
-    }).upgrade(async (trans) => {
-      // 升级时清空所有表以避免主键冲突
-      await trans.table('tasks').clear();
-      await trans.table('rewards').clear();
-      await trans.table('achievements').clear();
-      await trans.table('user').clear();
-      await trans.table('dailyHistory').clear();
-      console.log('✅ 数据库已升级到版本5，所有旧数据已清除');
+    // 版本6 - 添加用户认证系统
+    this.version(6).stores({
+      tasks: 'id, type, status, order, userId',  // 添加userId索引
+      rewards: 'id, cost, userId',                // 添加userId索引
+      achievements: 'id',
+      user: 'id, username',                       // 添加username索引用于登录
+      dailyHistory: 'id, userId',                 // 添加userId索引
+    }).upgrade(async () => {
+      console.log('✅ 数据库已升级到版本6，添加多用户支持');
     });
   }
 }
@@ -174,19 +178,37 @@ export const db = new KiddoHabitDatabase();
 // ==================== 初始化数据 ====================
 
 /**
- * 初始化默认用户数据
+ * 简单的密码加密（Base64编码，生产环境应使用更安全的方法）
  */
-export const initializeDefaultUser = async (): Promise<User> => {
-  const existingUser = await db.user.toArray();
+export const encryptPassword = (password: string): string => {
+  return btoa(password);
+};
 
-  if (existingUser.length > 0) {
-    return existingUser[0];
+/**
+ * 密码验证
+ */
+export const verifyPassword = (password: string, encrypted: string): boolean => {
+  return btoa(password) === encrypted;
+};
+
+/**
+ * 初始化超级管理员账号
+ */
+export const initializeSuperAdmin = async (): Promise<User> => {
+  const adminUsername = 'mookee';
+  const existingAdmin = await db.user.where('username').equals(adminUsername).first();
+
+  if (existingAdmin) {
+    return existingAdmin;
   }
 
-  const defaultUser: User = {
-    id: 'default-user',
-    name: '小朋友',
-    avatar: '😊',
+  const superAdmin: User = {
+    id: 'admin-mookee',
+    username: 'mookee',
+    password: encryptPassword('Xiaqian1989'),
+    name: '超级管理员',
+    avatar: '👑',
+    role: 'admin',
     level: 1,
     experience: 0,
     totalPoints: 0,
@@ -199,9 +221,17 @@ export const initializeDefaultUser = async (): Promise<User> => {
     lastLoginAt: new Date(),
   };
 
-  // 使用 put 代替 add，避免 React StrictMode 双重渲染导致的主键冲突
-  await db.user.put(defaultUser);
-  return defaultUser;
+  await db.user.put(superAdmin);
+  console.log('✅ 超级管理员账号已创建');
+  return superAdmin;
+};
+
+/**
+ * 初始化默认用户数据（已废弃，保留用于兼容）
+ */
+export const initializeDefaultUser = async (): Promise<User> => {
+  // 直接初始化超级管理员
+  return await initializeSuperAdmin();
 };
 
 /**
@@ -316,6 +346,6 @@ export const initializeAchievements = async (): Promise<void> => {
  * 初始化数据库（首次运行时调用）
  */
 export const initializeDatabase = async (): Promise<void> => {
-  await initializeDefaultUser();
+  await initializeSuperAdmin();
   await initializeAchievements();
 };

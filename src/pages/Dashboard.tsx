@@ -15,6 +15,8 @@ import { UserStats } from '../components/UserStats';
 import { RewardCard } from '../components/RewardCard';
 import { RewardForm } from '../components/RewardForm';
 import { AchievementBadge } from '../components/AchievementBadge';
+import { UserManagement } from '../components/UserManagement';
+import { LoginPage } from './LoginPage';
 import {
   WeeklyTaskChart,
   PointsTrendChart,
@@ -31,6 +33,7 @@ import { useDataBackup } from '../hooks/useDataBackup';
 import { useStats } from '../hooks/useStats';
 import { useSound } from '../hooks/useSound';
 import { useTheme } from '../hooks/useTheme';
+import { useAuth } from '../hooks/useAuth';
 import { type Task, type Reward } from '../lib/db';
 
 type Tab = 'tasks' | 'rewards' | 'achievements' | 'stats' | 'settings';
@@ -43,10 +46,13 @@ export default function Dashboard() {
   const [rewardFormOpen, setRewardFormOpen] = useState(false);
   const [rewardFormMode, setRewardFormMode] = useState<'add' | 'edit'>('add');
   const [editingReward, setEditingReward] = useState<Reward | undefined>(undefined);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const { showToast } = useToast();
 
   // 数据和操作
   const { user } = useUser();
+  const { checkAuth, logout } = useAuth();
   const {
     pendingTasks,
     completedTasks,
@@ -101,6 +107,32 @@ export default function Dashboard() {
     achievements: 0,
     dailyHistory: 0,
   });
+
+  // 检查登录状态
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      setIsCheckingAuth(true);
+      const loggedInUser = await checkAuth();
+      setIsLoggedIn(!!loggedInUser);
+      setIsCheckingAuth(false);
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  // 处理登出
+  const handleLogout = () => {
+    if (confirm('确定要登出吗？')) {
+      logout();
+      setIsLoggedIn(false);
+      showToast('已登出', 'success');
+    }
+  };
+
+  // 处理登录成功
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
 
   // 应用启动时检查并执行每日重置
   useEffect(() => {
@@ -300,6 +332,18 @@ export default function Dashboard() {
     { id: 'stats' as Tab, label: '数据统计', icon: '📊' },
     { id: 'settings' as Tab, label: '设置', icon: '⚙️' },
   ];
+
+  // 显示登录页面
+  if (!isLoggedIn) {
+    if (isCheckingAuth) {
+      return (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <p className="text-gray-600">加载中...</p>
+        </div>
+      );
+    }
+    return <LoginPage onLoginSuccess={handleLoginSuccess} />;
+  }
 
   if (!user) {
     return (
@@ -545,6 +589,46 @@ export default function Dashboard() {
         {/* 设置页面 */}
         {activeTab === 'settings' && (
           <div className="space-y-6">
+            {/* 账号管理 */}
+            <section>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
+                👤 账号管理
+              </h2>
+
+              {/* 当前用户信息和登出 */}
+              <Card className="mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="text-5xl">{user.avatar}</div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        {user.name}
+                        {user.role === 'admin' && (
+                          <span className="inline-flex items-center px-2 py-1 bg-warning text-gray-800 text-xs font-bold rounded-full">
+                            👑 管理员
+                          </span>
+                        )}
+                      </h3>
+                      <p className="text-sm text-gray-600">@{user.username}</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="danger"
+                    size="medium"
+                    icon="🚪"
+                    onClick={handleLogout}
+                  >
+                    登出
+                  </Button>
+                </div>
+              </Card>
+
+              {/* 用户管理（仅管理员可见） */}
+              {user.role === 'admin' && (
+                <UserManagement currentUser={user} />
+              )}
+            </section>
+
             {/* 数据管理 */}
             <section>
               <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">
