@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据库测试</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .log {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .success { color: green; }
+    .error { color: red; }
+    button {
+      background: #4ECDC4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover { background: #3db8af; }
+  </style>
+</head>
+<body>
+  <h1>IndexedDB 数据库测试</h1>
+  <button onclick="testDatabase()">开始测试</button>
+  <button onclick="clearAll()">清除所有数据</button>
+  <div id="results"></div>
+
+  <script type="module">
+    import Dexie from 'https://cdn.jsdelivr.net/npm/dexie@4.2.1/+esm';
+
+    window.log = function(msg, type = 'info') {
+      const div = document.createElement('div');
+      div.className = `log ${type}`;
+      div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      document.getElementById('results').appendChild(div);
+    }
+
+    window.testDatabase = async function() {
+      document.getElementById('results').innerHTML = '';
+      log('开始测试 IndexedDB...');
+
+      try {
+        // 创建数据库
+        log('步骤1: 创建数据库结构...');
+        const db = new Dexie('TestKiddoDB');
+
+        db.version(1).stores({
+          tasks: 'id, type, status, order',       // 无布尔值索引
+          rewards: 'id, cost',                     // 无布尔值索引
+          achievements: 'id',                      // 无布尔值索引
+          user: 'id',
+          dailyHistory: 'id, date',
+        });
+
+        await db.open();
+        log('✅ 数据库创建成功', 'success');
+
+        // 测试插入数据
+        log('步骤2: 测试插入数据...');
+        await db.table('user').add({
+          id: 'test-user',
+          name: '测试用户',
+          avatar: '😊',
+          level: 1,
+          experience: 0,
+          totalPoints: 0,
+          availablePoints: 0,
+          longestStreak: 0,
+          totalTasksCompleted: 0,
+          perfectDays: 0,
+          unlockedAchievements: [],
+          createdAt: new Date(),
+          lastLoginAt: new Date(),
+        });
+        log('✅ 用户数据插入成功', 'success');
+
+        // 测试任务数据
+        await db.table('tasks').add({
+          id: 'test-task-1',
+          type: 'daily',
+          title: '测试任务',
+          icon: '📝',
+          difficulty: 'easy',
+          points: 5,
+          status: 'pending',
+          streak: 0,
+          completed: false,  // 布尔值作为普通字段，不作为索引
+          createdAt: new Date(),
+          order: 1,
+        });
+        log('✅ 任务数据插入成功', 'success');
+
+        // 测试查询
+        log('步骤3: 测试数据查询...');
+        const users = await db.table('user').toArray();
+        log(`✅ 查询到 ${users.length} 个用户`, 'success');
+
+        const tasks = await db.table('tasks').toArray();
+        log(`✅ 查询到 ${tasks.length} 个任务`, 'success');
+
+        log('🎉 所有测试通过！', 'success');
+
+      } catch (error) {
+        log(`❌ 测试失败: ${error.message}`, 'error');
+        console.error(error);
+      }
+    }
+
+    window.clearAll = async function() {
+      try {
+        await Dexie.delete('TestKiddoDB');
+        await Dexie.delete('KiddoHabitDB');
+        log('✅ 所有数据库已清除', 'success');
+      } catch (error) {
+        log(`❌ 清除失败: ${error.message}`, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

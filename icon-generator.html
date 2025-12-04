@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA 图标生成器</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #f7f9fc;
+      padding: 20px;
+    }
+
+    .icon-container {
+      margin: 20px;
+      text-align: center;
+    }
+
+    .icon {
+      border-radius: 20%;
+      background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .icon::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    }
+
+    .icon-content {
+      position: relative;
+      z-index: 1;
+      font-size: 0.6em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    .icon-emoji {
+      font-size: 1.5em;
+      margin-bottom: 0.1em;
+    }
+
+    .icon-text {
+      font-size: 0.35em;
+      letter-spacing: 0.05em;
+    }
+
+    .icon-64 { width: 64px; height: 64px; }
+    .icon-192 { width: 192px; height: 192px; }
+    .icon-512 { width: 512px; height: 512px; }
+
+    .maskable {
+      border-radius: 0;
+      padding: 20%;
+    }
+
+    button {
+      margin: 10px;
+      padding: 12px 24px;
+      background: #4ECDC4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(78, 205, 196, 0.4);
+    }
+
+    .instructions {
+      max-width: 600px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .instructions h2 {
+      color: #4ECDC4;
+      margin-top: 0;
+    }
+
+    .instructions ol {
+      text-align: left;
+      line-height: 1.8;
+    }
+
+    .instructions code {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>📱 PWA 图标生成器</h1>
+
+  <div class="instructions">
+    <h2>使用说明</h2>
+    <ol>
+      <li>右键点击下方的图标，选择"图片另存为..."</li>
+      <li>将图标保存到 <code>kiddo-habit-app/public/</code> 文件夹</li>
+      <li>确保文件名与配置一致：
+        <ul>
+          <li>pwa-64x64.png</li>
+          <li>pwa-192x192.png</li>
+          <li>pwa-512x512.png</li>
+          <li>maskable-icon-512x512.png</li>
+        </ul>
+      </li>
+      <li>或者使用截图工具精确截取每个图标区域</li>
+    </ol>
+    <p><strong>提示：</strong>未来可以使用专业设计工具（如 Figma、Canva）创建更精美的图标。</p>
+  </div>
+
+  <div class="icon-container">
+    <h3>64x64 图标</h3>
+    <div class="icon icon-64" id="icon-64">
+      <div class="icon-content">
+        <div class="icon-emoji">⭐</div>
+        <div class="icon-text">习惯</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="icon-container">
+    <h3>192x192 图标</h3>
+    <div class="icon icon-192" id="icon-192">
+      <div class="icon-content">
+        <div class="icon-emoji">⭐</div>
+        <div class="icon-text">习惯助手</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="icon-container">
+    <h3>512x512 图标 (标准)</h3>
+    <div class="icon icon-512" id="icon-512">
+      <div class="icon-content">
+        <div class="icon-emoji">⭐</div>
+        <div class="icon-text">习惯助手</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="icon-container">
+    <h3>512x512 图标 (Maskable - 带安全区)</h3>
+    <div class="icon icon-512 maskable" id="icon-maskable">
+      <div class="icon-content">
+        <div class="icon-emoji">⭐</div>
+        <div class="icon-text">习惯助手</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 将 div 转换为 canvas 并下载（需要 html2canvas 库）
+    // 这里提供手动截图说明，简单快捷
+  </script>
+</body>
+</html>

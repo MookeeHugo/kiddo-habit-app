@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 动画时长 */
+  --duration-instant: 150ms;
+  --duration-fast: 250ms;
+  --duration-normal: 350ms;
+  --duration-slow: 500ms;
+  --duration-celebration: 1200ms;
+
+  /* 缓动函数 */
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-back: cubic-bezier(0.34, 1.35, 0.64, 1);
+
+  /* 主题颜色变量 - 默认青绿主题 */
+  --color-primary: 78, 205, 196;        /* #4ECDC4 */
+  --color-primary-light: 230, 249, 247; /* #E6F9F7 */
+  --color-primary-dark: 58, 181, 173;   /* #3AB5AD */
+  --color-background: 247, 255, 247;    /* #F7FFF7 */
+  --color-surface: 255, 255, 255;       /* #FFFFFF */
+
+  /* 渐变效果 */
+  --gradient-streak: linear-gradient(135deg, #FF6B6B 0%, #FFA500 100%);
+  --gradient-exp: linear-gradient(90deg, rgb(var(--color-primary)) 0%, rgb(var(--color-primary-light)) 100%);
+  --gradient-level-up: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B6B 100%);
+}
+
+/* 主题：活力黄 */
+[data-theme='sunshine'] {
+  --color-primary: 255, 217, 61;        /* #FFD93D */
+  --color-primary-light: 255, 246, 196; /* #FFF6C4 */
+  --color-primary-dark: 255, 193, 7;    /* #FFC107 */
+  --color-background: 255, 253, 245;    /* #FFFDF5 */
+  --color-surface: 255, 255, 255;       /* #FFFFFF */
+  --gradient-exp: linear-gradient(90deg, #FFD93D 0%, #FFE794 100%);
+}
+
+/* 主题：清新蓝 */
+[data-theme='ocean'] {
+  --color-primary: 107, 207, 127;       /* #6BCF7F */
+  --color-primary-light: 232, 248, 240; /* #E8F8F0 */
+  --color-primary-dark: 39, 174, 96;    /* #27AE60 */
+  --color-background: 240, 255, 247;    /* #F0FFF7 */
+  --color-surface: 255, 255, 255;       /* #FFFFFF */
+  --gradient-exp: linear-gradient(90deg, #6BCF7F 0%, #9FE2B0 100%);
+}
+
+/* 主题：温暖粉 */
+[data-theme='blossom'] {
+  --color-primary: 255, 158, 205;       /* #FF9ECD */
+  --color-primary-light: 255, 235, 245; /* #FFEBF5 */
+  --color-primary-dark: 240, 98, 146;   /* #F06292 */
+  --color-background: 255, 250, 253;    /* #FFFAFD */
+  --color-surface: 255, 255, 255;       /* #FFFFFF */
+  --gradient-exp: linear-gradient(90deg, #FF9ECD 0%, #FFC4E1 100%);
+}
+
+/* 减少动画模式 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@layer base {
+  /* 全局重置 */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+    background-color: rgb(var(--color-background));
+    color: #2C3E50;
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.3s ease;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  /* 自定义工具类 */
+  .text-gradient {
+    background: var(--gradient-exp);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .shadow-primary {
+    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+  }
+
+  .shadow-yellow {
+    box-shadow: 0 4px 12px rgba(255, 230, 109, 0.4);
+  }
+
+  /* 动画辅助类 */
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* 主题相关工具类 */
+  .bg-theme-primary {
+    background-color: rgb(var(--color-primary));
+  }
+
+  .bg-theme-primary-light {
+    background-color: rgb(var(--color-primary-light));
+  }
+
+  .bg-theme-surface {
+    background-color: rgb(var(--color-surface));
+  }
+
+  .text-theme-primary {
+    color: rgb(var(--color-primary));
+  }
+
+  .border-theme-primary {
+    border-color: rgb(var(--color-primary));
+  }
+
+  .hover\:bg-theme-primary:hover {
+    background-color: rgb(var(--color-primary));
+  }
+
+  /* 隐藏滚动条但保持滚动功能 - 响应式优化 */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
