@@ -4,6 +4,12 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    port: 5173,           // 固定端口
+    strictPort: true,     // 端口被占用时报错而不是自动切换
+    open: true,           // 自动打开浏览器
+    host: true,           // 允许局域网访问
+  },
   plugins: [
     react(),
     VitePWA({
@@ -65,7 +71,7 @@ export default defineConfig({
         ]
       },
       devOptions: {
-        enabled: true, // 开发环境也启用 PWA，方便测试
+        enabled: false, // 开发环境禁用 PWA，避免缓存干扰
         type: 'module'
       }
     })
