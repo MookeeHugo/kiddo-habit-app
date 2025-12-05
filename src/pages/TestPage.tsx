@@ -153,7 +153,7 @@ export default function TestPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background-primary flex items-center justify-center">
-        <div className="text-2xl text-text-primary">加载中...</div>
+        <div className="text-2xl text-gray-800">加载中...</div>
       </div>
     );
   }
@@ -163,17 +163,17 @@ export default function TestPage() {
       <div className="max-w-4xl mx-auto">
         {/* 标题 */}
         <header className="mb-8">
-          <h1 className="text-4xl font-bold text-text-primary mb-2">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">
             🧪 基础架构测试页面
           </h1>
-          <p className="text-text-secondary">
+          <p className="text-gray-600">
             验证数据库、游戏化逻辑和Hooks是否正常工作
           </p>
         </header>
 
         {/* 用户信息卡片 */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold text-text-primary mb-4">👤 用户信息</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">👤 用户信息</h2>
           {user ? (
             <div className="space-y-2">
               <p>
@@ -210,7 +210,7 @@ export default function TestPage() {
 
         {/* 游戏常量 */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold text-text-primary mb-4">⚙️ 游戏常量</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">⚙️ 游戏常量</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="font-semibold">最大等级: {GAME_CONSTANTS.MAX_LEVEL}</p>
@@ -231,21 +231,21 @@ export default function TestPage() {
 
         {/* 数据统计 */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold text-text-primary mb-4">📊 数据统计</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">📊 数据统计</h2>
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
               <p className="text-3xl font-bold text-primary-400">{tasks.length}</p>
-              <p className="text-text-secondary">任务总数</p>
+              <p className="text-gray-600">任务总数</p>
             </div>
             <div className="text-center">
               <p className="text-3xl font-bold text-yellow-400">{rewards.length}</p>
-              <p className="text-text-secondary">奖励总数</p>
+              <p className="text-gray-600">奖励总数</p>
             </div>
             <div className="text-center">
               <p className="text-3xl font-bold text-green-400">
                 {unlockedAchievements.length}
               </p>
-              <p className="text-text-secondary">已解锁成就</p>
+              <p className="text-gray-600">已解锁成就</p>
             </div>
           </div>
         </div>

@@ -95,13 +95,6 @@ export default {
           primary: '#F7FFF7',    // 主背景
           secondary: '#FFFFFF',  // 卡片背景
         },
-        // 文字色
-        text: {
-          DEFAULT: '#2C3E50',      // 默认文字
-          primary: '#2C3E50',      // 主文字
-          secondary: '#7F8C8D',    // 次要文字
-          tertiary: '#BDC3C7',     // 三级文字
-        },
       },
       borderRadius: {
         'sm': '8px',
