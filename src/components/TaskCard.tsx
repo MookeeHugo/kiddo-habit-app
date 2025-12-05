@@ -73,7 +73,13 @@ export function TaskCard({ task, onComplete, onEdit, onDelete }: TaskCardProps) 
                 }
               `}
             >
-              {task.completed && <span className="text-xl font-extrabold leading-none">✓</span>}
+              <span
+                className={`text-xl font-extrabold leading-none ${
+                  task.completed ? 'text-white' : 'text-gray-400'
+                }`}
+              >
+                ✓
+              </span>
             </motion.button>
           </div>
 

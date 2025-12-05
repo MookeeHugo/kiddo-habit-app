@@ -139,16 +139,20 @@ export function useTasks() {
         ? calculateCorrectStreak(task.streak, task.lastCompletedDate)
         : task.streak;
 
+      // 创建更新后的任务对象用于计算积分
+      const updatedTask = { ...task, completed: true, streak: newStreak };
+
+      // 获得奖励（这会计算积分）
+      const reward = await completeTask(updatedTask);
+
+      // 更新任务，包括计算出的积分
       await db.tasks.update(taskId, {
         completed: true,
         completedAt: new Date(),
         lastCompletedDate: new Date(), // 记录完成日期
         streak: newStreak,
+        points: reward.reward.points, // 保存实际获得的积分
       });
-
-      // 获得奖励
-      const updatedTask = { ...task, completed: true, streak: newStreak };
-      const reward = await completeTask(updatedTask);
 
       return { success: true, reward };
     } else {
@@ -161,6 +165,7 @@ export function useTasks() {
         completed: false,
         completedAt: undefined,
         streak: newStreak,
+        points: 0, // 重置积分
       });
 
       return { success: true };

@@ -168,6 +168,31 @@ export function TaskForm({
             className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none text-lg"
             required
           />
+
+          {/* 常用标签快捷按钮 */}
+          <div className="mt-3">
+            <p className="text-xs font-semibold text-gray-600 mb-2">📌 常用标签（点击填充）</p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                '练字15分钟',
+                '四本课外练习',
+                '读课外书15分钟',
+                '英语打卡15分钟',
+                '健身锻炼20分钟',
+                '整理书包',
+                '礼貌用语',
+              ].map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => setTitle(tag)}
+                  className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-primary hover:text-white text-gray-700 rounded-lg transition-colors duration-200 border border-gray-200 hover:border-primary"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* 任务描述 */}
